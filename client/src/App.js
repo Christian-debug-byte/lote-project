@@ -1,85 +1,41 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
+// Importing pages
+import Home from "./pages/home";
+import About from "./pages/about";
+import PlaceOrder from "./pages/placeOrder";
+import Contact from "./pages/Contact"; // imported Contact
+
+// Main App Component
 function App() {
-  const [formData, setFormData] = useState({
-    customerName: "",
-    product: "",
-    quantity: "",
-    totalPrice: "",
-  });
-
-  const [responseMsg, setResponseMsg] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await fetch("http://localhost:5000/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const result = await res.json();
-    if (res.ok) {
-      setResponseMsg("✅ Order placed successfully!");
-      setFormData({
-        customerName: "",
-        product: "",
-        quantity: "",
-        totalPrice: "",
-      });
-    } else {
-      setResponseMsg("❌ Error: " + result.error);
-    }
-  };
-
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Place New Order</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          id="customerName"
-          placeholder="Customer Name"
-          value={formData.customerName}
-          onChange={handleChange}
-        />
-        <br />
-        <br />
-        <input
-          id="product"
-          placeholder="Product"
-          value={formData.product}
-          onChange={handleChange}
-        />
-        <br />
-        <br />
-        <input
-          id="quantity"
-          type="number"
-          placeholder="Quantity"
-          value={formData.quantity}
-          onChange={handleChange}
-        />
-        <br />
-        <br />
-        <input
-          id="totalPrice"
-          type="number"
-          placeholder="Total Price"
-          value={formData.totalPrice}
-          onChange={handleChange}
-        />
-        <br />
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-      <p>{responseMsg}</p>
-    </div>
+    <Router>
+      <div style={{ padding: "20px" }}>
+        {/* Simple Navigation */}
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/" style={{ marginRight: "15px" }}>
+            Home
+          </Link>
+          <Link to="/about" style={{ marginRight: "15px" }}>
+            About
+          </Link>
+          <Link to="/place-order" style={{ marginRight: "15px" }}>
+            Place Order
+          </Link>
+          <Link to="/contact">Contact</Link> {/* Added Contact link */}
+        </nav>
+
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/place-order" element={<PlaceOrder />} />
+          <Route path="/contact" element={<Contact />} />{" "}
+          {/* Added Contact route */}
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

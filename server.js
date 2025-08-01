@@ -1,25 +1,25 @@
+require("dotenv").config(); // Load .env variables
+
 const express = require("express");
 const mongoose = require("mongoose");
-const ordersRoute = require("./routes/orders"); // Import your route
+const ordersRoute = require("./routes/orders");
 
 const app = express();
 
-// Middleware to parse JSON
+// Middleware
 app.use(express.json());
 
-// Connect to MongoDB
+// Connect to MongoDB WITHOUT deprecated options
 mongoose
-  .connect("mongodb://localhost:27017/lote", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Use your route
+// Routes
 app.use("/api/orders", ordersRoute);
 
-// Start the server
-app.listen(3000, () => {
-  console.log("🚀 Server running on http://localhost:3000");
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server is running on port ${port}`);
 });
